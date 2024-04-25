@@ -18,8 +18,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::all();
-        return json_encode($students);
+
+        return $this->studentsService->list();
     }
 
     /**
@@ -28,7 +28,7 @@ class StudentController extends Controller
     public function store(StudentsRequest $request)
     {
 
-        return  $this->studentsService->createStudent(
+        return  $this->studentsService->create(
             $request->all()
         );
     }
@@ -38,7 +38,7 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return $this->studentsService->listOne($id);
     }
 
     /**
@@ -46,7 +46,7 @@ class StudentController extends Controller
      */
     public function update(StudentsRequest $request, string $id)
     {
-        //
+        return $this->studentsService->edit($request->all(), $id);
     }
 
     /**
@@ -54,6 +54,11 @@ class StudentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        return $this->studentsService->delete($id);
+    }
+
+    public function update_workaround(StudentsRequest $request, $id)
+    {
+        return $this->update($request, $id);
     }
 }
