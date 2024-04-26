@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentsRequest;
-use App\Models\Student;
 use App\Services\StudentsService;
 
 class StudentController extends Controller
@@ -28,7 +27,7 @@ class StudentController extends Controller
     public function store(StudentsRequest $request)
     {
 
-        return  $this->studentsService->create(
+        return $this->studentsService->create(
             $request->all()
         );
     }
