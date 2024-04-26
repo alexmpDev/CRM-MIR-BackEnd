@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use App\Services\UserServices;
 
 class UserController extends Controller
 {
+    public function __construct(
+        protected UserServices $userService
+    ){}
     /**
      * Display a listing of the resource.
      *
@@ -14,8 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('role')->get();
-        return response()->json($users);
+       return $this->userService->list();
     }
 
     /**
@@ -24,16 +26,11 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email|unique:users',
-            'name' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
-        ]);
+        
+        return $this->userService->create($request->all());
 
-        $user = User::create($request->all());
-        return response()->json($user, 201);
     }
 
     /**
@@ -44,8 +41,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::with('role')->findOrFail($id);
-        return response()->json($user);
+        return $this->userService->list_one($id);
     }
 
     /**
@@ -55,18 +51,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        $request->validate([
-            'email' => 'email|unique:users,email,'.$id,
-            'name' => 'string|max:255',
-            'password' => 'string|min:6',
-        ]);
+       
 
-        $user = User::findOrFail($id);
-        $user->update($request->all());
-
-        return response()->json($user, 200);
+        return $this->userService->update($request->all(), $id);
     }
 
     /**
@@ -77,9 +66,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+       return $this->userService->delete($id);
+    }
 
-        return response()->json(null, 204);
+    public function update_workaround(UserRequest $request, $id)
+    {
+
+        return $this->update($request, $id);
     }
 }

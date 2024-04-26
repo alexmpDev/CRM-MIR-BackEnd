@@ -12,4 +12,6 @@ Route::get('/user', function (Request $request) {
 
 
 Route::apiResource('roles', RoleController::class);
+Route::post('roles/{id}', [RoleController::class, 'update_workaround']);
 Route::apiResource('users', UserController::class);
+Route::post('users/{id}', [UserController::class, 'update_workaround']);

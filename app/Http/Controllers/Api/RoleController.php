@@ -3,49 +3,42 @@
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
-use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use App\Services\RoleServices;
 
 class RoleController extends Controller
 {
+    public function __construct(
+        protected RoleServices $roleService
+    ){}
     public function index()
     {
-        $roles = Role::all();
-        return response()->json($roles);
+        return $this->roleService->list();
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $role = Role::create($request->all());
-        return response()->json($role, 201);
+        return $this->roleService->create($request->all());
     }
 
     public function show($id)
     {
-        $role = Role::findOrFail($id);
-        return response()->json($role);
+       return $this->roleService->list_one($id);
     }
 
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $role = Role::findOrFail($id);
-        $role->update($request->all());
-
-        return response()->json($role, 200);
+        return $this->roleService->update($request->all(), $id);
     }
 
     public function destroy($id)
     {
-        $role = Role::findOrFail($id);
-        $role->delete();
+       return $this->roleService->delete($id);
+    }
 
-        return response()->json(null, 204);
+    public function update_workaround(UserRequest $request, $id)
+    {
+
+        return $this->update($request, $id);
     }
 }
