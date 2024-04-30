@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Storage;
+use App\Models\Book;
+
+class BookService
+{
+    public function list() {
+
+        $books = Book::all();
+        return json_encode($books);
+    }
+
+    public function listOne($id) {
+
+        $book = Book::where('id', $id)->get();
+        return json_encode($book);
+    }
+
+    public function create($data) {
+
+        Book::create([
+
+            'title' => $data['title'],
+            'author' => $data['author'],
+            'isbn' => $data['isbn'],
+            'gender' => $data['gender'],
+        ]);
+        
+    }
+
+    public function edit($data, $id){
+
+        $book = Book::find($id);
+        $book['title'] = $data['title'];
+        $book['author'] = $data['author'];
+        $book['isbn'] = $data['isbn'];
+        $book['gender'] = $data['gender'];   
+
+        $book->save();
+    }
+
+    public function delete($id){
+
+        $book = Book::find($id);
+        if (isset($book)) {
+            $book->delete();
+            
+        } else {
+            return 'No hay estudiante con esta id';
+        }
+    }
+
+}
