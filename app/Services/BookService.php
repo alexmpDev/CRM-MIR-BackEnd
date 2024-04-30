@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Storage;
 use App\Models\Book;
 
 class BookService
@@ -49,7 +48,7 @@ class BookService
             $book->delete();
             
         } else {
-            return 'No hay estudiante con esta id';
+            return 'No hay libro con esta id';
         }
     }
 
