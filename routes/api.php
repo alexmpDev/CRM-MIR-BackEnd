@@ -27,6 +27,6 @@ Route::post('students/{id}', [StudentController::class, 'update_workaround']);
 Route::apiResource("books", BookController::class);
 Route::post('books/{id}', [BookController::class, 'update_workaround']);
 
+Route::get('/reservations/filter', [ReservationController::class, 'filter']);
 Route::apiResource("reservations", ReservationController::class);
 Route::post('reservations/{id}', [ReservationController::class, 'update_workaround']);
-

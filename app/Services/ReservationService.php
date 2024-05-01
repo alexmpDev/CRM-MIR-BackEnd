@@ -6,19 +6,22 @@ use App\Models\Reservation;
 
 class ReservationService
 {
-    public function list() {
+    public function list()
+    {
 
         $reservations = Reservation::all();
         return json_encode($reservations);
     }
 
-    public function listOne($id) {
+    public function listOne($id)
+    {
 
         $reservation = Reservation::where('id', $id)->get();
         return json_encode($reservation);
     }
 
-    public function create($data) {
+    public function create($data)
+    {
 
         Reservation::create([
 
@@ -29,7 +32,8 @@ class ReservationService
         ]);
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
 
         $reservation = Reservation::find($id);
         $reservation['book_id'] = $reservation['book_id'];
@@ -39,16 +43,36 @@ class ReservationService
         $reservation->save();
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
 
         $reservation = Reservation::find($id);
 
         if (isset($reservation)) {
             $reservation->delete();
-            
         } else {
             return 'No hay reserva con esta id';
         }
     }
 
+    public function filter($bookId, $studentId)
+    {
+        if ( isset($bookId) && isset($studentId) ){
+
+            $reservations = Reservation::where('book_id', $bookId)
+            ->where('user_id', $studentId)
+            ->get();
+        } elseif (isset($bookId) && !isset($studentId)) {
+
+            $reservations = Reservation::where('book_id', $bookId)
+            ->get();
+        } elseif (!isset($bookId) && isset($studentId)) {
+
+            $reservations = Reservation::where('user_id', $studentId)
+            ->get();
+        }
+        
+
+        return json_encode($reservations);
+    }
 }

@@ -11,7 +11,8 @@ class ReservationController extends Controller
 {
     public function __construct(
         protected  ReservationService $reservationService,
-    ) {}
+    ) {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -56,5 +57,14 @@ class ReservationController extends Controller
     {
 
         return $this->update($request, $id);
+    }
+    
+    public function filter(Request $request)
+    {
+
+        return $this->reservationService->filter(
+            $request->input('book_id'), 
+            $request->input('student_id')
+        );
     }
 }
