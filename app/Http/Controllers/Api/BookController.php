@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
 use App\Services\BookService;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -54,5 +55,15 @@ class BookController extends Controller
     public function update_workaround(BookRequest $request, $id)
     {
         return $this->update($request, $id);
+    }
+
+    public function filter(Request $request)
+    {
+
+        return $this->bookService->filter(
+            $request->input('title'), 
+            $request->input('author'),
+            $request->input('gender')
+        );
     }
 }
