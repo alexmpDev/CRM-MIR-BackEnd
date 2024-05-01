@@ -39,4 +39,16 @@ class ReservationService
         $reservation->save();
     }
 
+    public function delete($id) {
+
+        $reservation = Reservation::find($id);
+
+        if (isset($reservation)) {
+            $reservation->delete();
+            
+        } else {
+            return 'No hay reserva con esta id';
+        }
+    }
+
 }
