@@ -17,13 +17,13 @@ class ReservationSeeder extends Seeder
         $reservations = [
             [
                 'book_id' => '1',
-                'user_id' => '2',
+                'student_id' => '2',
                 'return_date' => new DateTime('tomorrow'),
                 'returned' => false,
             ],
             [
                 'book_id' => '2',
-                'user_id' => '1',
+                'student_id' => '1',
                 'return_date' => new DateTime('tomorrow'),
                 'returned' => true,
             ],

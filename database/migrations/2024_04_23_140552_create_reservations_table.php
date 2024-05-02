@@ -16,12 +16,12 @@ class CreateReservationsTable extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('book_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('student_id');
             $table->date('return_date');
             $table->boolean('returned')->default(false);
             $table->timestamps();
             $table->foreign('book_id')->references('id')->on('books');
-            $table->foreign('user_id')->references('id')->on('students');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
         });
     }
 

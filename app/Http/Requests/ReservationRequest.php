@@ -23,7 +23,7 @@ class ReservationRequest extends FormRequest
     {
         return [
             'book_id' => 'required|string',
-            'user_id' => 'required|string',
+            'student_id' => 'required|string',
             'return_date' => 'required|after:today',
             'returned' => 'required',
         ];

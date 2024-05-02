@@ -16,7 +16,7 @@ class CreateWcPassTable extends Migration
         Schema::create('wc_pass', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id');
-            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->string('teacher', 255);
             $table->timestamps();
         });

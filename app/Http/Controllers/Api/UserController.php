@@ -28,7 +28,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        
+
         return $this->userService->create($request->all());
 
     }
@@ -53,7 +53,7 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, $id)
     {
-       
+
 
         return $this->userService->update($request->all(), $id);
     }
@@ -71,7 +71,6 @@ class UserController extends Controller
 
     public function update_workaround(UserRequest $request, $id)
     {
-
         return $this->update($request, $id);
     }
 }

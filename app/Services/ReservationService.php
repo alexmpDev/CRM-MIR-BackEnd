@@ -26,7 +26,7 @@ class ReservationService
         Reservation::create([
 
             'book_id' => $data['book_id'],
-            'user_id' => $data['user_id'],
+            'student_id' => $data['student_id'],
             'return_date' => $data['return_date'],
             'returned' => $data['returned'],
         ]);
@@ -37,7 +37,7 @@ class ReservationService
 
         $reservation = Reservation::find($id);
         $reservation['book_id'] = $reservation['book_id'];
-        $reservation['user_id'] = $reservation['user_id'];
+        $reservation['student_id'] = $reservation['student_id'];
         $reservation['return_date'] = $reservation['return_date'];
         $reservation['returned'] = true;
         $reservation->save();
@@ -60,7 +60,7 @@ class ReservationService
         if ( isset($bookId) && isset($studentId) ){
 
             $reservations = Reservation::where('book_id', $bookId)
-            ->where('user_id', $studentId)
+            ->where('student_id', $studentId)
             ->get();
         } elseif (isset($bookId) && !isset($studentId)) {
 
@@ -68,10 +68,10 @@ class ReservationService
             ->get();
         } elseif (!isset($bookId) && isset($studentId)) {
 
-            $reservations = Reservation::where('user_id', $studentId)
+            $reservations = Reservation::where('student_id', $studentId)
             ->get();
         }
-        
+
 
         return json_encode($reservations);
     }
