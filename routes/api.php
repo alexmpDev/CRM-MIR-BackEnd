@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\ReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
@@ -32,4 +34,10 @@ Route::get('students/{studentId}/observations', [StudentOverservationController:
 Route::apiResource("students", StudentController::class);
 Route::post('students/{id}', [StudentController::class, 'update_workaround']);
 
+Route::get('/books/filter', [BookController::class, 'filter']);
+Route::apiResource("books", BookController::class);
+Route::post('books/{id}', [BookController::class, 'update_workaround']);
 
+Route::get('/reservations/filter', [ReservationController::class, 'filter']);
+Route::apiResource("reservations", ReservationController::class);
+Route::post('reservations/{id}', [ReservationController::class, 'update_workaround']);
