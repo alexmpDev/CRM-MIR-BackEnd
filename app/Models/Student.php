@@ -15,4 +15,14 @@ class Student extends Model
         'photo',
         'leave'
     ];
+
+    public function biblioPass()
+    {
+        return $this->hasOne(BiblioPass::class);
+    }
+
+    public function observations()
+    {
+        return $this->hasMany(StudentObservation::class);
+    }
 }

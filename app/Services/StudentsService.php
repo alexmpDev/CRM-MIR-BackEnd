@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
 use App\Models\Student;
+use App\Models\StudentObservation;
 
 class StudentsService
 {
@@ -18,7 +19,10 @@ class StudentsService
     {
 
         $student = Student::where('id', $id)->get();
+
+        
         return json_encode($student);
+
     }
 
     public function create($data)
@@ -28,11 +32,22 @@ class StudentsService
             $photoPath = $this->savePhoto($data['photo']);
         }
 
-        Student::create([
+        $student = Student::create([
             'name' => $data['name'],
             'class' => $data['class'],
             'photo' => $photoPath,
         ]);
+
+        // Crea el BiblioPass asociado al estudiante, lo creamos de esta manerapor que hay una relación en el modelo
+        $student->biblioPass()->create();
+
+        // Carga la relación BiblioPass
+        $student->load('biblioPass');
+
+
+        return response()->json($student, 201);
+
+       
     }
 
     private function savePhoto($photo)
@@ -57,6 +72,57 @@ class StudentsService
         
     }
 
+    public function createStudentObservation($id, $data)
+    {
+        $student = Student::find($id);
+        if (!$student) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
+    
+        $observation = StudentObservation::create([
+            'student_id' => $student->id,
+            'observation' => $data['observation']
+        ]);
+    
+        return response()->json($observation, 201);
+    }
+
+    public function updateStudentObservation($id, $data)
+    {
+        $observation = StudentObservation::findOrFail($id);
+        
+        $observation->update([
+            'observation' => $data['observation']
+        ]);
+
+        return response()->json($observation, 200);
+    }
+
+
+    public function deleteStudentObservation($observationId)
+    {
+        $observation = StudentObservation::find($observationId);
+        if (!$observation) {
+            return response()->json(['message' => 'Observation not found'], 404);
+        }
+
+        $observation->delete();
+        return response()->json(['message' => 'Observation deleted successfully'], 200);
+    }
+
+    public function listStudentObservations($studentId)
+    {
+        $student = Student::find($studentId);
+        if (!$student) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
+    
+        $observations = $student->observations()->get();
+    
+        return response()->json($observations, 200);
+    }
+
+    
     public function delete($id){
         $student = Student::find($id);
         if (isset($student)) {
