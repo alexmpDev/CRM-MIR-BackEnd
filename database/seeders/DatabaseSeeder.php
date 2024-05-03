@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StudentsTableSeeder::class);
         $this->call(BookSeeder::class);
         $this->call(ReservationSeeder::class);
+        $this->call(WcPassSeeder::class);
         // User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
