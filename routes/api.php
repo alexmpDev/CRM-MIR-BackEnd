@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\StudentOverservationController;
+use App\Http\Controllers\Api\PhoneInfoController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -21,6 +22,15 @@ Route::post('roles/{id}', [RoleController::class, 'update_workaround']);
 Route::post('users/{id}', [UserController::class, 'update_workaround']);
 Route::apiResource('users', UserController::class);
 
+// TODO: No se necesita el id en la ruta por que lo pasas por el body
+Route::post('students/phoneinfo/{id}',[PhoneInfoController::class, 'store']);
+
+// TODO: No usas el student id , eliminar
+Route::post('students/phoneinfo/{id}/{phoneinfo}', [PhoneInfoController::class, 'update_workaround']);
+// Ruta para eliminar una observación de un estudiante
+Route::delete('students/phoneinfo/{id}/{phoneinfo}', [PhoneInfoController::class, 'destroy']);
+// Ruta para ver las observaciones de un estudiante
+Route::get('students/{studentId}/phones', [PhoneInfoController::class, 'listPhoneInfo']);
 
 // Ruta para crear una obsrvación de un estudiante
 // TODO: No se necesita el id en la ruta por que lo pasas por el body
@@ -44,3 +54,7 @@ Route::post('books/{id}', [BookController::class, 'update_workaround']);
 Route::get('/reservations/filter', [ReservationController::class, 'filter']);
 Route::apiResource("reservations", ReservationController::class);
 Route::post('reservations/{id}', [ReservationController::class, 'update_workaround']);
+
+
+
+

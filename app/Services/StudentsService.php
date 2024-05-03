@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\PhoneInfo;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Student;
 use App\Models\StudentObservation;
@@ -137,4 +138,59 @@ class StudentsService
         
         
     }
+
+    //phone info
+
+    public function createPhoneInfo($id, $data)
+    {
+        $student = Student::find($id);
+        if (!$student) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
+    
+        $phoneInfo = PhoneInfo::create([
+            'student_id' => $student->id,
+            'name' => $data['name'],
+            'phone' => $data['phone']
+        ]);
+    
+        return response()->json($phoneInfo, 201);
+    }
+
+    public function updatePhoneInfo($id, $data)
+    {
+        $phoneInfo = PhoneInfo::findOrFail($id);
+        
+        $phoneInfo->update([
+            'name' => $data['name'],
+            'phone' => $data['phone']
+        ]);
+
+        return response()->json($phoneInfo, 200);
+    }
+
+
+    public function deletePhoneInfo($phoneInfoId)
+    {
+        $phoneInfo = PhoneInfo::find($phoneInfoId);
+        if (!$phoneInfo) {
+            return response()->json(['message' => 'Phone information not found'], 404);
+        }
+
+        $phoneInfo->delete();
+        return response()->json(['message' => 'Phone information deleted successfully'], 200);
+    }
+
+    public function listStudentPhoneInfo($studentId)
+    {
+        $student = Student::find($studentId);
+        if (!$student) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
+    
+        $phones = $student->phones()->get();
+    
+        return response()->json($phones, 200);
+    }
+
 }

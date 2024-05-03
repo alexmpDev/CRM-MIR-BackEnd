@@ -25,4 +25,9 @@ class Student extends Model
     {
         return $this->hasMany(StudentObservation::class);
     }
+
+    public function phones()
+    {
+        return $this->hasMany(PhoneInfo::class);
+    }
 }

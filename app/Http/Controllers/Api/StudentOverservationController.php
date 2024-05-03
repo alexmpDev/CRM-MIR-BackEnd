@@ -24,7 +24,7 @@ class StudentOverservationController extends Controller
      */
     public function store(StudentObservationRequest $request, $id)
     {
-
+        
         //esto va en el show de student
         return $this->studentsService->createStudentObservation($id, $request->all());
     }
@@ -37,7 +37,6 @@ class StudentOverservationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    // TODO: No usas el student id , eliminar
     public function update(StudentObservationRequest $request, $studentId, $observationId)
     {
         return $this->studentsService->updateStudentObservation($observationId, $request->all());
@@ -45,14 +44,13 @@ class StudentOverservationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-
+   
      public function destroy($studentId, $observationId)
      {
          return $this->studentsService->deleteStudentObservation($observationId);
      }
 
 
-    // TODO: No usas el student id , eliminar
      public function update_workaround(StudentObservationRequest $request, $studentId, $observationId)
      {
          return $this->update($request, $studentId, $observationId);
