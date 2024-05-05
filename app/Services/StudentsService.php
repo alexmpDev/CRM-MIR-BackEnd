@@ -6,12 +6,12 @@ use App\Models\PhoneInfo;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Student;
 use App\Models\StudentObservation;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class StudentsService
 {
     public function list()
     {
-
         $students = Student::all();
         return json_encode($students);
     }
@@ -35,9 +35,22 @@ class StudentsService
 
         $student = Student::create([
             'name' => $data['name'],
+            'surname1' => $data['surname1'],
+            'surname2' => $data['surname2'],
+            'dni' => $data['dni'],
+            'birthDate' => $data['birthDate'],
             'class' => $data['class'],
             'photo' => $photoPath,
+            'leave' => $data['leave'],
         ]);
+  
+         // Llama a la función para guardar el código QR después de haber creado el estudiante
+        $qrPath = $this->saveQr($student->id);
+        
+        // Actualiza el campo 'qr' en la tabla de estudiantes con la ruta del código QR
+        $student->update(['qr' => $qrPath]);
+
+            
 
         // Crea el BiblioPass asociado al estudiante, lo creamos de esta manerapor que hay una relación en el modelo
         $student->biblioPass()->create();
@@ -45,23 +58,33 @@ class StudentsService
         // Carga la relación BiblioPass
         $student->load('biblioPass');
 
+        
+
 
         return response()->json($student, 201);
 
        
     }
 
-    private function savePhoto($photo)
-    {
+    
 
-        $photoPath = $photo->store('photos', 'public');
-        return $photoPath;
+    private function saveQr($studentId){
+        $url = 'http://127.0.0.1:8000/api/students/' . $studentId;
+        $image = QrCode::format('png')->generate($url);
+        $output_file = 'public/qr/' . time() . '.png';
+        Storage::disk('local')->put($output_file, $image); 
+        return $output_file;
     }
+
 
     public function edit($data, $id){
 
         $student = Student::find($id);
         $student->name = $data['name'];
+        $student->surename1 = $data['surname1'];
+        $student->surname2 = $data['surname2'];
+        $student->dni = $data['dni'];
+        $student->birthDate = $data['birthDate'];
         $student->class = $data['class'];
         if (isset($data['photo'])) {
             isset($student->photo) ? Storage::delete("/public/" .$student->photo) : "";
@@ -73,9 +96,9 @@ class StudentsService
         
     }
 
-    public function createStudentObservation($id, $data)
+    public function createStudentObservation($data)
     {
-        $student = Student::find($id);
+        $student = Student::find($data['student_id']);
         if (!$student) {
             return response()->json(['message' => 'Student not found'], 404);
         }
@@ -141,9 +164,9 @@ class StudentsService
 
     //phone info
 
-    public function createPhoneInfo($id, $data)
+    public function createPhoneInfo($data)
     {
-        $student = Student::find($id);
+        $student = Student::find($data['student_id']);
         if (!$student) {
             return response()->json(['message' => 'Student not found'], 404);
         }
@@ -191,6 +214,13 @@ class StudentsService
         $phones = $student->phones()->get();
     
         return response()->json($phones, 200);
+    }
+
+    private function savePhoto($photo)
+    {
+
+        $photoPath = $photo->store('photos', 'public');
+        return $photoPath;
     }
 
 }

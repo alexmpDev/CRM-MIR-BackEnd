@@ -22,26 +22,26 @@ Route::post('roles/{id}', [RoleController::class, 'update_workaround']);
 Route::post('users/{id}', [UserController::class, 'update_workaround']);
 Route::apiResource('users', UserController::class);
 
-// TODO: No se necesita el id en la ruta por que lo pasas por el body
-Route::post('students/phoneinfo/{id}',[PhoneInfoController::class, 'store']);
 
-// TODO: No usas el student id , eliminar
-Route::post('students/phoneinfo/{id}/{phoneinfo}', [PhoneInfoController::class, 'update_workaround']);
+Route::post('students/phoneinfo',[PhoneInfoController::class, 'store']);
+
+
+Route::post('students/phoneinfo/{phoneinfo}', [PhoneInfoController::class, 'update_workaround']);
 // Ruta para eliminar una observación de un estudiante
-Route::delete('students/phoneinfo/{id}/{phoneinfo}', [PhoneInfoController::class, 'destroy']);
+Route::delete('students/phoneinfo/{phoneinfo}', [PhoneInfoController::class, 'destroy']);
 // Ruta para ver las observaciones de un estudiante
 Route::get('students/{studentId}/phones', [PhoneInfoController::class, 'listPhoneInfo']);
 
 // Ruta para crear una obsrvación de un estudiante
-// TODO: No se necesita el id en la ruta por que lo pasas por el body
-Route::post('students/observations/{id}',[StudentOverservationController::class, 'store']);
+
+Route::post('students/observations',[StudentOverservationController::class, 'store']);
 
 // Ruta para actualizar una observación de un estudiante
 // Route::put('students/observations/{id}/{observation}', [StudentOverservationController::class, 'update']);
-// TODO: No usas el student id , eliminar
-Route::post('students/observations/{id}/{observtion}', [StudentOverservationController::class, 'update_workaround']);
+
+Route::post('students/observations/{observtion}', [StudentOverservationController::class, 'update_workaround']);
 // Ruta para eliminar una observación de un estudiante
-Route::delete('students/observations/{id}/{observation}', [StudentOverservationController::class, 'destroy']);
+Route::delete('students/observations/{observation}', [StudentOverservationController::class, 'destroy']);
 // Ruta para ver las observaciones de un estudiante
 Route::get('students/{studentId}/observations', [StudentOverservationController::class, 'listStudentObservations']);
 Route::apiResource("students", StudentController::class);

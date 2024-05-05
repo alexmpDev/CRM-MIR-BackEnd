@@ -11,9 +11,14 @@ class Student extends Model
 
     protected $fillable = [
         'name',
+        'surname1',
+        'surname2',
+        'dni',
+        'birthDate',
         'class',
         'photo',
-        'leave'
+        'leave',
+        'qr'
     ];
 
     public function biblioPass()

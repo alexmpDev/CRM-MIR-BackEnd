@@ -14,9 +14,14 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
+            $table->string('surname1', 255);
+            $table->string('surname2', 255);
+            $table->string('dni', 255);//no mostrar en ningun show ni lista usar solo en bd
+            $table->date('birthDate');
             $table->string('class', 255);
             $table->string('photo', 255)->nullable();
             $table->boolean('leave')->default(false);
+            $table->string('qr',255)->nullable();
             $table->timestamps();
         });
     }

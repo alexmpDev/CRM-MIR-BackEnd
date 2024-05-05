@@ -23,11 +23,11 @@ class PhoneInfoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PhoneInfoRequest $request, $id)
+    public function store(PhoneInfoRequest $request)
     {
         
         //esto va en el show de student
-        return $this->studentsService->createPhoneInfo($id, $request->all());
+        return $this->studentsService->createPhoneInfo($request->all());
     }
     public function listPhoneInfo($studentId)
     {
@@ -38,7 +38,7 @@ class PhoneInfoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PhoneInfoRequest $request, $studentId, $phoneInfoId)
+    public function update(PhoneInfoRequest $request, $phoneInfoId)
     {
         return $this->studentsService->updatePhoneInfo($phoneInfoId, $request->all());
     }
@@ -46,14 +46,14 @@ class PhoneInfoController extends Controller
      * Remove the specified resource from storage.
      */
    
-     public function destroy($studentId, $observationId)
+     public function destroy($phoneInfoId)
      {
-         return $this->studentsService->deletePhoneInfo($observationId);
+         return $this->studentsService->deletePhoneInfo($phoneInfoId);
      }
 
 
-     public function update_workaround(PhoneInfoRequest $request, $studentId, $phoneInfoId)
+     public function update_workaround(PhoneInfoRequest $request, $phoneInfoId)
      {
-         return $this->update($request, $studentId, $phoneInfoId);
+         return $this->update($request,  $phoneInfoId);
      }
 }
