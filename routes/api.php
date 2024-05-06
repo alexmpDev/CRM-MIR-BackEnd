@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\StudentOverservationController;
 use App\Http\Controllers\Api\PhoneInfoController;
+use App\Http\Controllers\Api\WcController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -55,6 +56,4 @@ Route::get('/reservations/filter', [ReservationController::class, 'filter']);
 Route::apiResource("reservations", ReservationController::class);
 Route::post('reservations/{id}', [ReservationController::class, 'update_workaround']);
 
-
-
-
+Route::apiResource("wc", WcController::class);
