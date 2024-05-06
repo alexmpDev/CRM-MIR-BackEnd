@@ -21,7 +21,7 @@ class StudentsService
 
         $student = Student::where('id', $id)->get();
 
-        
+
         return json_encode($student);
 
     }
@@ -39,18 +39,18 @@ class StudentsService
             'surname2' => $data['surname2'],
             'dni' => $data['dni'],
             'birthDate' => $data['birthDate'],
-            'class' => $data['class'],
+            'curs' => $data['curs'],
             'photo' => $photoPath,
             'leave' => $data['leave'],
         ]);
-  
+
          // Llama a la función para guardar el código QR después de haber creado el estudiante
         $qrPath = $this->saveQr($student->id);
-        
+
         // Actualiza el campo 'qr' en la tabla de estudiantes con la ruta del código QR
         $student->update(['qr' => $qrPath]);
 
-            
+
 
         // Crea el BiblioPass asociado al estudiante, lo creamos de esta manerapor que hay una relación en el modelo
         $student->biblioPass()->create();
@@ -58,21 +58,21 @@ class StudentsService
         // Carga la relación BiblioPass
         $student->load('biblioPass');
 
-        
+
 
 
         return response()->json($student, 201);
 
-       
+
     }
 
-    
+
 
     private function saveQr($studentId){
         $url = 'http://127.0.0.1:8000/api/students/' . $studentId;
         $image = QrCode::format('png')->generate($url);
         $output_file = 'public/qr/' . time() . '.png';
-        Storage::disk('local')->put($output_file, $image); 
+        Storage::disk('local')->put($output_file, $image);
         return $output_file;
     }
 
@@ -85,7 +85,7 @@ class StudentsService
         $student->surname2 = $data['surname2'];
         $student->dni = $data['dni'];
         $student->birthDate = $data['birthDate'];
-        $student->class = $data['class'];
+        $student->class = $data['curs'];
         if (isset($data['photo'])) {
             isset($student->photo) ? Storage::delete("/public/" .$student->photo) : "";
             $photoPath = $this->savePhoto($data['photo']);
@@ -93,7 +93,7 @@ class StudentsService
         }
 
         $student->save();
-        
+
     }
 
     public function createStudentObservation($data)
@@ -102,19 +102,19 @@ class StudentsService
         if (!$student) {
             return response()->json(['message' => 'Student not found'], 404);
         }
-    
+
         $observation = StudentObservation::create([
             'student_id' => $student->id,
             'observation' => $data['observation']
         ]);
-    
+
         return response()->json($observation, 201);
     }
 
     public function updateStudentObservation($id, $data)
     {
         $observation = StudentObservation::findOrFail($id);
-        
+
         $observation->update([
             'observation' => $data['observation']
         ]);
@@ -140,26 +140,26 @@ class StudentsService
         if (!$student) {
             return response()->json(['message' => 'Student not found'], 404);
         }
-    
+
         $observations = $student->observations()->get();
-    
+
         return response()->json($observations, 200);
     }
 
-    
+
     public function delete($id){
         $student = Student::find($id);
         if (isset($student)) {
             $student->delete();
             if (isset($student->photo)){
-    
+
                 Storage::delete("/public/" .$student->photo);
             }
         } else {
             return 'No hay estudiante con esta id';
         }
-        
-        
+
+
     }
 
     //phone info
@@ -170,20 +170,20 @@ class StudentsService
         if (!$student) {
             return response()->json(['message' => 'Student not found'], 404);
         }
-    
+
         $phoneInfo = PhoneInfo::create([
             'student_id' => $student->id,
             'name' => $data['name'],
             'phone' => $data['phone']
         ]);
-    
+
         return response()->json($phoneInfo, 201);
     }
 
     public function updatePhoneInfo($id, $data)
     {
         $phoneInfo = PhoneInfo::findOrFail($id);
-        
+
         $phoneInfo->update([
             'name' => $data['name'],
             'phone' => $data['phone']
@@ -210,9 +210,9 @@ class StudentsService
         if (!$student) {
             return response()->json(['message' => 'Student not found'], 404);
         }
-    
+
         $phones = $student->phones()->get();
-    
+
         return response()->json($phones, 200);
     }
 

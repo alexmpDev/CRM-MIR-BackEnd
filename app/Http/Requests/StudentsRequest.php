@@ -23,7 +23,7 @@ class StudentsRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'class' => 'required|string',
+            'curs' => 'required|string',
             'photo' => 'image|mimes:jpeg,png,jpg,webp|',
         ];
     }
