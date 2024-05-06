@@ -19,6 +19,7 @@ class CreateBooksTable extends Migration
             $table->string('author', 255);
             $table->string('isbn', 20);
             $table->string('gender', 50);
+            $table->string('barcode')->nullable();// TODO: cambiar seeder para que no pete la tabla y poder quitar el nullable
             $table->timestamps();
         });
     }

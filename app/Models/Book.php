@@ -13,7 +13,8 @@ class Book extends Model
         'title',
         'author',
         'isbn',
-        'gender'
+        'gender',
+        'barcode'
     ];
 
     public function reservations()

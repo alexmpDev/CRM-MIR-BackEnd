@@ -11,7 +11,8 @@ class WcPass extends Model
 
     protected $fillable = [
         'student_id',
-        'teacher'
+        'teacher',
+        'valid_until'
     ];
 
     public function student()

@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\WcPass;
+use Carbon\Carbon;
+use DateTime;
 
 class WcService
 {
@@ -19,11 +21,11 @@ class WcService
     }
 
     public function create($data) {
-
+        $date = new DateTime();
         WcPass::create([
-
             'student_id' => $data['student_id'],
             'teacher' => $data['teacher'],
+            'valid_until' => $date->modify('+ 1 hour')
         ]);
     }
 
