@@ -81,11 +81,12 @@ class StudentsService
 
         $student = Student::find($id);
         $student->name = $data['name'];
-        $student->surename1 = $data['surname1'];
+        $student->surname1 = $data['surname1'];
         $student->surname2 = $data['surname2'];
         $student->dni = $data['dni'];
         $student->birthDate = $data['birthDate'];
-        $student->class = $data['curs'];
+        $student->curs = $data['curs'];
+        $student->leave = $data['leave'];
         if (isset($data['photo'])) {
             isset($student->photo) ? Storage::delete("/public/" .$student->photo) : "";
             $photoPath = $this->savePhoto($data['photo']);
