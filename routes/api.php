@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\StudentOverservationController;
 use App\Http\Controllers\Api\PhoneInfoController;
+use App\Http\Controllers\Api\TokenController;
 use App\Http\Controllers\Api\WcController;
 
 Route::get('/user', function (Request $request) {
@@ -17,12 +18,15 @@ Route::get('/user', function (Request $request) {
 
 
 
-Route::apiResource('roles', RoleController::class);
-Route::post('roles/{id}', [RoleController::class, 'update_workaround']);
+// Route::apiResource('roles', RoleController::class);
+// Route::post('roles/{id}', [RoleController::class, 'update_workaround']);
 
-Route::post('users/{id}', [UserController::class, 'update_workaround']);
-Route::apiResource('users', UserController::class);
-
+// Route::post('users/{id}', [UserController::class, 'update_workaround']);
+// Route::apiResource('users', UserController::class);
+Route::get('user', [TokenController::class, 'user'])->middleware('auth:sanctum');
+Route::post('register', [TokenController::class, 'register'])->middleware('guest');
+Route::post('login', [TokenController::class, 'login'])->middleware('guest');
+Route::post('logout', [TokenController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::post('students/phoneinfo',[PhoneInfoController::class, 'store']);
 
