@@ -23,8 +23,12 @@ class StudentsRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'class' => 'required|string',
-            'photo' => 'image|mimes:jpeg,png,jpg,webp|',
+            'surname1' => 'required|string',
+            'surname2' => 'required|string',
+            'dni' => 'required|string',
+            'birthDate' =>'required|before:today' ,
+            'curs' => 'required|string',
+            'leave',
         ];
     }
 }

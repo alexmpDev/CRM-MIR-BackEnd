@@ -15,7 +15,7 @@ class Student extends Model
         'surname2',
         'dni',
         'birthDate',
-        'class',
+        'curs',
         'photo',
         'leave',
         'qr'
