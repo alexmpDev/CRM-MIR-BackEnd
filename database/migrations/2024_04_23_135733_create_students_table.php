@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name', 255);
             $table->string('surname1', 255);
             $table->string('surname2', 255);
+            $table->string('email',255);
             $table->string('dni', 255);//no mostrar en ningun show ni lista usar solo en bd
             $table->date('birthDate');
             $table->unsignedBigInteger('course_id'); // Referencia a la tabla courses

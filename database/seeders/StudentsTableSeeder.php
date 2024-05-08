@@ -19,6 +19,7 @@ class StudentsTableSeeder extends Seeder
                 'name' => 'Estudiante 1',
                 'surname1' => 'Apellido1',
                 'surname2' => 'Apellido2',
+                'email' => 'email@example.com',
                 'dni' => '12345678A',
                 'birthDate' => '2000-01-01',
                 'course_id' => 1, // Asume que existe un curso con ID 1
@@ -30,6 +31,7 @@ class StudentsTableSeeder extends Seeder
                 'name' => 'Estudiante 2',
                 'surname1' => 'Apellido3',
                 'surname2' => 'Apellido4',
+                'email' => 'email2@example.com',
                 'dni' => '87654321B',
                 'birthDate' => '2001-02-02',
                 'course_id' => 2, // Asume que existe un curso con ID 2
@@ -46,6 +48,7 @@ class StudentsTableSeeder extends Seeder
                 'name' => $student['name'],
                 'surname1' => $student['surname1'],
                 'surname2' => $student['surname2'],
+                'email' => $student['email'],
                 'dni' => $student['dni'],
                 'birthDate' => $student['birthDate'],
                 'course_id' => $student['course_id'],

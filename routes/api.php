@@ -23,6 +23,8 @@ Route::get('/user', function (Request $request) {
 
 // Route::post('users/{id}', [UserController::class, 'update_workaround']);
 // Route::apiResource('users', UserController::class);
+Route::get('users', [UserController::class, 'index']);
+
 Route::get('user', [TokenController::class, 'user'])->middleware('auth:sanctum');
 Route::post('register', [TokenController::class, 'register'])->middleware('guest');
 Route::post('login', [TokenController::class, 'login'])->middleware('guest');

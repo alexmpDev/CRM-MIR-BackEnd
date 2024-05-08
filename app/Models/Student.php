@@ -13,6 +13,7 @@ class Student extends Model
         'name',
         'surname1',
         'surname2',
+        'email',
         'dni',
         'birthDate',
         'course_id',

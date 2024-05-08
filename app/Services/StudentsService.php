@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
+use App\Mail\WelcomeStudentMail;
 use App\Models\PhoneInfo;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Student;
 use App\Models\StudentObservation;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class StudentsService
@@ -37,6 +40,7 @@ class StudentsService
             'name' => $data['name'],
             'surname1' => $data['surname1'],
             'surname2' => $data['surname2'],
+            'email' => $data['email'],
             'dni' => $data['dni'],
             'birthDate' => $data['birthDate'],
             'course_id' => $data['course_id'],
@@ -52,7 +56,13 @@ class StudentsService
 
 
 
-      
+        try {
+            Mail::to($student->email)->send(new WelcomeStudentMail($student, $qrPath));
+        } catch (\Exception $e) {
+            // Log the error or handle it according to your application's needs
+            Log::error("Failed to send email: " . $e->getMessage());
+            return response()->json(['message' => 'Failed to send email', 'error' => $e->getMessage()], 500);
+        }
 
 
         return response()->json($student, 201);
