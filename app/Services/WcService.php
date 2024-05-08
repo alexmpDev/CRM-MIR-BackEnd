@@ -20,14 +20,42 @@ class WcService
         return json_encode($wcPass);
     }
 
+    // public function create($data) {
+    //     $date = new DateTime();
+    //     WcPass::create([
+    //         'student_id' => $data['student_id'],
+    //         'teacher' => $data['teacher'],
+    //         'valid_until' => $date->modify('+ 1 hour')
+    //     ]);
+    // }
+
     public function create($data) {
+        // Primero, comprobar si ya hay un pase válido
+        $currentStatus = $this->passControl($data['student_id']);
+        $status = json_decode($currentStatus, true);
+
+        // Si hay un pase válido, no permitir crear otro
+        if ($status['status']) {
+            return json_encode([
+                'status' => false,
+                'message' => 'Este estudiante ya tiene un wcpass válido y no se puede crear otro.'
+            ]);
+        }
+
+        // Si no hay pase válido, proceder a crear uno nuevo
         $date = new DateTime();
         WcPass::create([
             'student_id' => $data['student_id'],
             'teacher' => $data['teacher'],
-            'valid_until' => $date->modify('+ 1 hour')
+            'valid_until' => $date->modify('+1 hour')
+        ]);
+
+        return json_encode([
+            'status' => true,
+            'message' => 'Nuevo wcpass creado exitosamente.'
         ]);
     }
+
 
     public function edit($data, $id) {
 
@@ -45,6 +73,26 @@ class WcService
             $wcPass->delete();
         } else {
             return 'No hay pase de baño con esta id';
+        }
+    }
+
+    public function passControl($studentId) {
+        $now = Carbon::now();
+        $wcPass = WcPass::where('student_id', $studentId)
+                        ->where('valid_until', '>', $now)
+                        ->first();
+        
+        if ($wcPass) {
+            return json_encode([
+                'status' => true,
+                'message' => 'El estudiante todavía tiene un wcpass válido.',
+                'wcPass' => $wcPass
+            ]);
+        } else {
+            return json_encode([
+                'status' => false,
+                'message' => 'No hay wcpass válido para este estudiante.'
+            ]);
         }
     }
 
