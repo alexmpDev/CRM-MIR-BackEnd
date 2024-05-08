@@ -21,10 +21,7 @@ class Student extends Model
         'qr'
     ];
 
-    public function biblioPass()
-    {
-        return $this->hasOne(BiblioPass::class);
-    }
+    
 
     public function observations()
     {

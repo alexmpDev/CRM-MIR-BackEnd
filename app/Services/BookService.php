@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Book;
 use Illuminate\Support\Facades\Storage;
 use Picqer\Barcode\BarcodeGeneratorPNG;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 class BookService
 {
     public function list()
@@ -32,20 +34,32 @@ class BookService
             'gender' => $data['gender'],
         ]);
 
-        $barcodePath = $this->saveBarcode($book->id);
+      
 
-        $book->update(['barcode' => $barcodePath]);
+        //version con qr
+         $qrPath = $this->saveQr($book->id);
+
+         $book->update(['qr' => $qrPath]);
+ 
     }
 
-    private function saveBarcode($bookId){
+    private function saveQr($bookId){
         $url = 'http://127.0.0.1:8000/api/books/' . $bookId;
-        $generator = new BarcodeGeneratorPNG();
-        $generator->useImagick();
-        $barcode = $generator->getBarcode($url, $generator::TYPE_CODE_128);
-        $output_file = 'public/barcode/' . time() . '.png';
-        Storage::disk('local')->put($output_file, $barcode); 
+        $image = QrCode::format('png')->generate($url);
+        $output_file = 'public/qr/books/' . time() . '.png';
+        Storage::disk('local')->put($output_file, $image);
         return $output_file;
     }
+
+    // private function saveBarcode($bookId){
+    //     $url = 'http://127.0.0.1:8000/api/books/' . $bookId;
+    //     $generator = new BarcodeGeneratorPNG();
+    //     $generator->useImagick();
+    //     $barcode = $generator->getBarcode($url, $generator::TYPE_CODE_128);
+    //     $output_file = 'public/barcode/' . time() . '.png';
+    //     Storage::disk('local')->put($output_file, $barcode); 
+    //     return $output_file;
+    // }
     public function edit($data, $id)
     {
 

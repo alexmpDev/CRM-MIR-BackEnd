@@ -39,7 +39,7 @@ class StudentsService
             'surname2' => $data['surname2'],
             'dni' => $data['dni'],
             'birthDate' => $data['birthDate'],
-            'curs' => $data['curs'],
+            'curs' => $data['curs'],// TODO: pasar a otra tabla
             'photo' => $photoPath,
             'leave' => $data['leave'],
         ]);
@@ -52,13 +52,7 @@ class StudentsService
 
 
 
-        // Crea el BiblioPass asociado al estudiante, lo creamos de esta manerapor que hay una relación en el modelo
-        $student->biblioPass()->create();
-
-        // Carga la relación BiblioPass
-        $student->load('biblioPass');
-
-
+      
 
 
         return response()->json($student, 201);
@@ -71,7 +65,7 @@ class StudentsService
     private function saveQr($studentId){
         $url = 'http://127.0.0.1:8000/api/students/' . $studentId;
         $image = QrCode::format('png')->generate($url);
-        $output_file = 'public/qr/' . time() . '.png';
+        $output_file = 'public/qr/students/' . time() . '.png';
         Storage::disk('local')->put($output_file, $image);
         return $output_file;
     }
