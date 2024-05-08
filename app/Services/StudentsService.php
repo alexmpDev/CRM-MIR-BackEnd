@@ -12,7 +12,7 @@ class StudentsService
 {
     public function list()
     {
-        $students = Student::all();
+        $students = Student::with('course')->get();
         return json_encode($students);
     }
 
@@ -39,7 +39,7 @@ class StudentsService
             'surname2' => $data['surname2'],
             'dni' => $data['dni'],
             'birthDate' => $data['birthDate'],
-            'curs' => $data['curs'],// TODO: pasar a otra tabla
+            'course_id' => $data['course_id'],
             'photo' => $photoPath,
             'leave' => $data['leave'],
         ]);
@@ -79,7 +79,7 @@ class StudentsService
         $student->surname2 = $data['surname2'];
         $student->dni = $data['dni'];
         $student->birthDate = $data['birthDate'];
-        $student->curs = $data['curs'];
+        $student->curs = $data['course_id'];
         $student->leave = $data['leave'];
         if (isset($data['photo'])) {
             isset($student->photo) ? Storage::delete("/public/" .$student->photo) : "";

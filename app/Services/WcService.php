@@ -20,14 +20,6 @@ class WcService
         return json_encode($wcPass);
     }
 
-    // public function create($data) {
-    //     $date = new DateTime();
-    //     WcPass::create([
-    //         'student_id' => $data['student_id'],
-    //         'teacher' => $data['teacher'],
-    //         'valid_until' => $date->modify('+ 1 hour')
-    //     ]);
-    // }
 
     public function create($data) {
         // Primero, comprobar si ya hay un pase válido
@@ -43,11 +35,10 @@ class WcService
         }
 
         // Si no hay pase válido, proceder a crear uno nuevo
-        $date = new DateTime();
         WcPass::create([
             'student_id' => $data['student_id'],
             'teacher' => $data['teacher'],
-            'valid_until' => $date->modify('+1 hour')
+            'valid_until' =>Carbon::now()->addHours(1)
         ]);
 
         return json_encode([

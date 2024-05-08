@@ -5,20 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Book extends Model
+class Course extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'author',
-        'isbn',
-        'gender',
-        'qr'
+        'curs',
     ];
 
-    public function reservations()
+    public function students()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Student::class);
     }
+
 }

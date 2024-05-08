@@ -15,13 +15,18 @@ class Student extends Model
         'surname2',
         'dni',
         'birthDate',
-        'curs',
+        'course_id',
         'photo',
         'leave',
         'qr'
     ];
 
     
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
 
     public function observations()
     {

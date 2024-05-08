@@ -13,7 +13,7 @@ class StudentsTableSeeder extends Seeder
      */
     public function run()
     {
-        // Definir los datos de prueba
+        // Asegúrate de que estos course_id correspondan a cursos realmente existentes en la tabla `courses`
         $students = [
             [
                 'name' => 'Estudiante 1',
@@ -21,7 +21,7 @@ class StudentsTableSeeder extends Seeder
                 'surname2' => 'Apellido2',
                 'dni' => '12345678A',
                 'birthDate' => '2000-01-01',
-                'curs' => 'Clase A',
+                'course_id' => 1, // Asume que existe un curso con ID 1
                 'photo' => null,
                 'leave' => false,
                 'qr' => null,
@@ -32,7 +32,7 @@ class StudentsTableSeeder extends Seeder
                 'surname2' => 'Apellido4',
                 'dni' => '87654321B',
                 'birthDate' => '2001-02-02',
-                'curs' => 'Clase B',
+                'course_id' => 2, // Asume que existe un curso con ID 2
                 'photo' => null,
                 'leave' => true,
                 'qr' => null,
@@ -42,7 +42,22 @@ class StudentsTableSeeder extends Seeder
 
         // Insertar los datos en la tabla 'students'
         foreach ($students as $student) {
-            DB::table('students')->insert($student);
+            DB::table('students')->insert([
+                'name' => $student['name'],
+                'surname1' => $student['surname1'],
+                'surname2' => $student['surname2'],
+                'dni' => $student['dni'],
+                'birthDate' => $student['birthDate'],
+                'course_id' => $student['course_id'],
+                'photo' => $student['photo'],
+                'leave' => $student['leave'],
+                'qr' => $student['qr'],
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
         }
     }
+
+       
+    
 }

@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('surname2', 255);
             $table->string('dni', 255);//no mostrar en ningun show ni lista usar solo en bd
             $table->date('birthDate');
-            $table->string('curs', 255);
+            $table->unsignedBigInteger('course_id'); // Referencia a la tabla courses
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
             $table->string('photo', 255)->nullable();
             $table->boolean('leave')->default(false);
             $table->string('qr',255)->nullable();

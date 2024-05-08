@@ -51,15 +51,7 @@ class BookService
         return $output_file;
     }
 
-    // private function saveBarcode($bookId){
-    //     $url = 'http://127.0.0.1:8000/api/books/' . $bookId;
-    //     $generator = new BarcodeGeneratorPNG();
-    //     $generator->useImagick();
-    //     $barcode = $generator->getBarcode($url, $generator::TYPE_CODE_128);
-    //     $output_file = 'public/barcode/' . time() . '.png';
-    //     Storage::disk('local')->put($output_file, $barcode); 
-    //     return $output_file;
-    // }
+
     public function edit($data, $id)
     {
 
