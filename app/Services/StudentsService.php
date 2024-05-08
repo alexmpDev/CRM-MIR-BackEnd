@@ -56,13 +56,9 @@ class StudentsService
 
 
 
-        try {
-            Mail::to($student->email)->send(new WelcomeStudentMail($student, $qrPath));
-        } catch (\Exception $e) {
-            // Log the error or handle it according to your application's needs
-            Log::error("Failed to send email: " . $e->getMessage());
-            return response()->json(['message' => 'Failed to send email', 'error' => $e->getMessage()], 500);
-        }
+       
+        Mail::to('adria96.mp@gmail.com')->send(new WelcomeStudentMail($student, $qrPath));
+        
 
 
         return response()->json($student, 201);
