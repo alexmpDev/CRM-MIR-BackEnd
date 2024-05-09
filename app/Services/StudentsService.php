@@ -57,9 +57,9 @@ class StudentsService
 
 
        
-        Mail::to('adria96.mp@gmail.com')->send(new WelcomeStudentMail($student, $qrPath));
+       Mail::to($student->email)->send(new WelcomeStudentMail($student, $qrPath));
         
-
+        
 
         return response()->json($student, 201);
 

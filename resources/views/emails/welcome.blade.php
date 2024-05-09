@@ -4,8 +4,8 @@
     <title>Welcome Email</title>
 </head>
 <body>
-    <h1>Welcome, {{ $name }}!</h1>
-    <p>Here is your QR Code:</p>
+    <h1>Hola, {{ $name }}!</h1>
+    <p>Guarda el teu codi QR:</p>
     <img src="{{ asset('storage/' . $qrPath) }}">
 </body>
 </html>

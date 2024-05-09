@@ -18,4 +18,9 @@ class Course extends Model
         return $this->hasMany(Student::class);
     }
 
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event_courses');
+    }
+
 }

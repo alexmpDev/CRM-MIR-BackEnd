@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -63,3 +64,14 @@ Route::apiResource("reservations", ReservationController::class);
 Route::post('reservations/{id}', [ReservationController::class, 'update_workaround']);
 
 Route::apiResource("wc", WcController::class);
+
+// Asignar cursos a un evento
+Route::post('/events/assign-courses', [EventController::class, 'assignCourses']);
+Route::post('/events/generate-tickets', [EventController::class, 'generateTickets']);
+Route::apiResource("events", EventController::class);
+Route::post('events/{id}', [EventController::class, 'update_workaround']);
+
+
+
+
+
