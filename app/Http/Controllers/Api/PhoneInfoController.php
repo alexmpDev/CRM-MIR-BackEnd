@@ -58,8 +58,8 @@ class PhoneInfoController extends Controller
      }
 
 
-     public function update_workaround(PhoneInfoRequest $request, $phoneInfoId)
+     public function update_workaround(PhoneInfoRequest $request, $id)
      {
-         return $this->update($request,  $phoneInfoId);
+         return $this->update($request,  $id);
      }
 }

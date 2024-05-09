@@ -30,7 +30,7 @@ Route::post('logout', [TokenController::class, 'logout'])->middleware('auth:sanc
 
 Route::post('students/phoneinfo',[PhoneInfoController::class, 'store']);
 Route::get('students/phones/{id}',[PhoneInfoController::class, 'show']);
-Route::post('students/phoneinfo/{phoneinfo}', [PhoneInfoController::class, 'update_workaround']);
+Route::post('students/phoneinfo/{id}', [PhoneInfoController::class, 'update_workaround']);
 // Ruta para eliminar una observación de un estudiante
 Route::delete('students/phoneinfo/{phoneinfo}', [PhoneInfoController::class, 'destroy']);
 // Ruta para ver las observaciones de un estudiante
@@ -44,6 +44,7 @@ Route::post('students/observations',[StudentOverservationController::class, 'sto
 // Route::put('students/observations/{id}/{observation}', [StudentOverservationController::class, 'update']);
 
 Route::post('students/observations/{observtion}', [StudentOverservationController::class, 'update_workaround']);
+Route::get('students/observations/{id}', [StudentOverservationController::class, 'show']);
 // Ruta para eliminar una observación de un estudiante
 Route::delete('students/observations/{observation}', [StudentOverservationController::class, 'destroy']);
 // Ruta para ver las observaciones de un estudiante

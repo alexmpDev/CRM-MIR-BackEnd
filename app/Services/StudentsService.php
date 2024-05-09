@@ -35,6 +35,15 @@ class StudentsService
 
     }
 
+    public function listOneObservation($id)
+    {
+
+        $student = StudentObservation::where('id', $id)->get();
+
+        return json_encode($student);
+
+    }
+
     public function create($data)
     {
         $photoPath = null;
