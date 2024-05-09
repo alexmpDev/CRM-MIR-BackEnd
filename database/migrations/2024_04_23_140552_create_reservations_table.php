@@ -20,7 +20,7 @@ class CreateReservationsTable extends Migration
             $table->date('return_date');
             $table->boolean('returned')->default(false);
             $table->timestamps();
-            $table->foreign('book_id')->references('id')->on('books');
+            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');;
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
         });
     }
