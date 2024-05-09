@@ -34,28 +34,21 @@ class BookService
             'gender' => $data['gender'],
         ]);
 
-      
+
 
         //version con qr
          $qrPath = $this->saveQr($book->id);
 
          $book->update(['qr' => $qrPath]);
- 
+
     }
 
     private function saveQr($bookId){
         $url = 'http://127.0.0.1:8000/api/books/' . $bookId;
-<<<<<<< Updated upstream
         $image = QrCode::format('png')->generate($url);
         $output_file = 'public/qr/books/' . time() . '.png';
         Storage::disk('local')->put($output_file, $image);
-=======
-        $generator = new BarcodeGeneratorPNG();
-        $generator->useImagick();
-        $barcode = $generator->getBarcode($url, $generator::TYPE_CODE_128);
-        $output_file = 'public/barcode/' . time() . '.png';
-        Storage::disk('local')->put($output_file, $barcode);
->>>>>>> Stashed changes
+
         return $output_file;
     }
 
@@ -65,7 +58,7 @@ class BookService
     //     $generator->useImagick();
     //     $barcode = $generator->getBarcode($url, $generator::TYPE_CODE_128);
     //     $output_file = 'public/barcode/' . time() . '.png';
-    //     Storage::disk('local')->put($output_file, $barcode); 
+    //     Storage::disk('local')->put($output_file, $barcode);
     //     return $output_file;
     // }
     public function edit($data, $id)
