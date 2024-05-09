@@ -25,10 +25,16 @@ class PhoneInfoController extends Controller
      */
     public function store(PhoneInfoRequest $request)
     {
-        
+
         //esto va en el show de student
         return $this->studentsService->createPhoneInfo($request->all());
     }
+
+    public function show($id)
+    {
+        return $this->studentsService->listOnePhone($id);
+    }
+
     public function listPhoneInfo($studentId)
     {
         return $this->studentsService->listStudentPhoneInfo($studentId);
@@ -45,7 +51,7 @@ class PhoneInfoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-   
+
      public function destroy($phoneInfoId)
      {
          return $this->studentsService->deletePhoneInfo($phoneInfoId);

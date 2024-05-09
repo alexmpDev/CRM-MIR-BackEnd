@@ -29,8 +29,7 @@ Route::post('login', [TokenController::class, 'login'])->middleware('guest');
 Route::post('logout', [TokenController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::post('students/phoneinfo',[PhoneInfoController::class, 'store']);
-
-
+Route::get('students/phones/{id}',[PhoneInfoController::class, 'show']);
 Route::post('students/phoneinfo/{phoneinfo}', [PhoneInfoController::class, 'update_workaround']);
 // Ruta para eliminar una observación de un estudiante
 Route::delete('students/phoneinfo/{phoneinfo}', [PhoneInfoController::class, 'destroy']);

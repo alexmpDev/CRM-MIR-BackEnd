@@ -26,6 +26,15 @@ class StudentsService
 
     }
 
+    public function listOnePhone($id)
+    {
+
+        $student = PhoneInfo::where('id', $id)->get();
+
+        return json_encode($student);
+
+    }
+
     public function create($data)
     {
         $photoPath = null;
@@ -52,7 +61,7 @@ class StudentsService
 
 
 
-      
+
 
 
         return response()->json($student, 201);
