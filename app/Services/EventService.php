@@ -152,7 +152,16 @@ public function unassignCoursesFromEvent($eventId, $courseIds)
 }
 
 
-
+public function validateTicket($ticketId)
+{
+    $ticket = EventTicket::find($ticketId);
+    if ($ticket) {
+        $ticket->verified = true;  // Asegúrate que el campo se llama `verified` si eso es lo que está en tu modelo
+        $ticket->save();
+        return true;
+    }
+    return false;
+}
 
 
 

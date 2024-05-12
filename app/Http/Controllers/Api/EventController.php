@@ -70,6 +70,21 @@ class EventController extends Controller
         return $this->eventService->unassignCoursesFromEvent($eventId, $courseIds);
     }
 
+  
+
+    public function validateTicket(string $ticketId)
+    {
+        $result = $this->eventService->validateTicket($ticketId);
+
+        if ($result) {
+            return response()->json(['message' => 'Ticket validated successfully.'], 200);
+        }
+
+        return response()->json(['message' => 'Ticket not found.'], 404);
+    }
+
+
+
 
     
 }
