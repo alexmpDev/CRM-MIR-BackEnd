@@ -67,7 +67,9 @@ Route::apiResource("wc", WcController::class);
 
 // Asignar cursos a un evento
 Route::post('/events/assign-courses', [EventController::class, 'assignCourses']);
+
 Route::post('/events/generate-tickets', [EventController::class, 'generateTickets']);
+Route::delete('/events/{eventId}/unassign-courses', [EventController::class, 'unassignCourses']);
 Route::apiResource("events", EventController::class);
 Route::post('events/{id}', [EventController::class, 'update_workaround']);
 

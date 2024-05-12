@@ -64,6 +64,12 @@ class EventController extends Controller
         return $this->eventService->generateTicketsForEvent($eventId);
     }
     
+    public function unassignCourses(Request $request, $eventId)
+    {
+        $courseIds = $request->input('course_ids');
+        return $this->eventService->unassignCoursesFromEvent($eventId, $courseIds);
+    }
+
 
     
 }

@@ -25,7 +25,7 @@ class EventService
     
     public function listOne($id) {
 
-        $event = Event::where('id', $id)->get();
+        $event = Event::with('courses')->where('id', $id)->first();
         return json_encode($event);
     }
     
@@ -129,6 +129,29 @@ class EventService
 
     return response()->json(['message' => 'Tickets generated successfully', 'event' => $event], 200);
 }
+
+public function unassignCoursesFromEvent($eventId, $courseIds)
+{
+    $validator = Validator::make(
+        ['event_id' => $eventId, 'course_ids' => $courseIds],
+        [
+            'event_id' => 'required|exists:events,id',
+            'course_ids' => 'required|array',
+            'course_ids.*' => 'exists:courses,id'
+        ]
+    );
+
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 400);
+    }
+
+    $event = Event::findOrFail($eventId);
+    $event->courses()->detach($courseIds);  // Desvincula los cursos especificados del evento
+
+    return response()->json(['message' => 'Specific courses unassigned successfully', 'event' => $event], 200);
+}
+
+
 
 
 
