@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->unsignedBigInteger('event_id'); // Referencia a la tabla events
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+            $table->string('qr',255)->nullable(); 
             $table->boolean('verified')->default(false);
             $table->timestamps();
         });

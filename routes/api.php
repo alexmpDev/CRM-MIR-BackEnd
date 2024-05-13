@@ -70,7 +70,9 @@ Route::post('/events/assign-courses', [EventController::class, 'assignCourses'])
 
 Route::post('/events/generate-tickets', [EventController::class, 'generateTickets']);
 Route::delete('/events/{eventId}/unassign-courses', [EventController::class, 'unassignCourses']);
-Route::patch('/tickets/validate/{ticketId}', [EventController::class, 'validateTicket']);
+
+Route::get('/tickets/validate/{ticketId}', [EventController::class, 'validateTicket']);
+
 Route::apiResource("events", EventController::class);
 Route::post('events/{id}', [EventController::class, 'update_workaround']);
 

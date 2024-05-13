@@ -15,8 +15,14 @@ class Event extends Model
     ];
 
     // Relación muchos-a-muchos con Course
+
     public function courses()
     {
         return $this->belongsToMany(Course::class, 'event_courses');
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(EventTicket::class);
     }
 }
