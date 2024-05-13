@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\EventTicketMail;
 use App\Mail\WelcomeStudentMail;
 use App\Models\PhoneInfo;
 use Illuminate\Support\Facades\Storage;
@@ -12,8 +13,7 @@ use App\Models\EventTicket;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Log;
-
-
+use Illuminate\Support\Facades\Mail;
 
 class EventService
 {
@@ -84,27 +84,6 @@ class EventService
     }
 
 
-    // public function generateTicketsForEvent($eventId)
-    // {
-    //     $event = Event::with('courses.students')->findOrFail($eventId);
-    //     foreach ($event->courses as $course) {
-    //         foreach ($course->students as $student) {
-    //             $ticketExists = EventTicket::where('student_id', $student->id)
-    //                                        ->where('event_id', $eventId)
-    //                                        ->exists();
-    //             if (!$ticketExists) {
-    //                 $ticket = EventTicket::create([
-    //                     'student_id' => $student->id,
-    //                     'event_id' => $eventId,
-    //                     'verified' => false
-    //                 ]);
-    //                 $qrPath = $this->saveQr($ticket->id);
-    //                 $ticket->update(['qr' => $qrPath]);
-    //             }
-    //         }
-    //     }
-    //     return response()->json(['message' => 'Tickets generated successfully', 'event' => $event], 200);
-    // }
     public function generateTicketsForEvent($eventId)
 {
     $event = Event::with('courses.students')->findOrFail($eventId);
@@ -121,6 +100,8 @@ class EventService
                 ]);
                 $qrPath = $this->saveQr($ticket->id, $student->id, $eventId);
                 $ticket->update(['qr' => $qrPath]);
+                Mail::to($student->email)->send(new EventTicketMail($student, $event, $qrPath));
+
             }
         }
     }
@@ -128,14 +109,7 @@ class EventService
 }
 
 
-// private function saveQr($ticketId)
-// {
-//     $url = 'http://127.0.0.1:8000/api/tickets/validate/' . $ticketId;
-//     $image = QrCode::format('png')->generate($url);
-//     $output_file = 'public/qr/tickets/' . time() . '.png';
-//     Storage::disk('local')->put($output_file, $image);
-//     return $output_file;
-// }
+
 
 private function saveQr($ticketId, $studentId, $eventId)
 {
@@ -171,16 +145,6 @@ public function unassignCoursesFromEvent($eventId, $courseIds)
 }
 
 
-// public function validateTicket($ticketId)
-// {
-//     $ticket = EventTicket::find($ticketId);
-//     if ($ticket) {
-//         $ticket->verified = true;  // Asegúrate que el campo se llama `verified` si eso es lo que está en tu modelo
-//         $ticket->save();
-//         return true;
-//     }
-//     return false;
-// }
 public function validateTicket($ticketId)
 {
     $ticket = EventTicket::find($ticketId);
