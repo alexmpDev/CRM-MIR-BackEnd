@@ -25,7 +25,6 @@ class ReservationRequest extends FormRequest
             'book_id' => 'required|string',
             'student_id' => 'required|string',
             'return_date' => 'required|after:today',
-            'returned' => 'required',
         ];
     }
 }

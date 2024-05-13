@@ -42,7 +42,7 @@ class ReservationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return $this->reservationService->edit($id);
+         $this->reservationService->edit($id);
     }
 
     /**
@@ -58,12 +58,12 @@ class ReservationController extends Controller
 
         return $this->update($request, $id);
     }
-    
+
     public function filter(Request $request)
     {
 
         return $this->reservationService->filter(
-            $request->input('book_id'), 
+            $request->input('book_id'),
             $request->input('student_id')
         );
     }

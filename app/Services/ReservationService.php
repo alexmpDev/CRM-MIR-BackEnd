@@ -16,7 +16,7 @@ class ReservationService
     public function listOne($id)
     {
 
-        $reservation = Reservation::where('id', $id)->get();
+        $reservation = Reservation::where('id', $id)->with('book', 'student')->get();
         return json_encode($reservation);
     }
 
@@ -28,7 +28,6 @@ class ReservationService
             'book_id' => $data['book_id'],
             'student_id' => $data['student_id'],
             'return_date' => $data['return_date'],
-            'returned' => $data['returned'],
         ]);
     }
 
@@ -36,9 +35,6 @@ class ReservationService
     {
 
         $reservation = Reservation::find($id);
-        $reservation['book_id'] = $reservation['book_id'];
-        $reservation['student_id'] = $reservation['student_id'];
-        $reservation['return_date'] = $reservation['return_date'];
         $reservation['returned'] = true;
         $reservation->save();
     }
@@ -57,6 +53,7 @@ class ReservationService
 
     public function filter($bookId, $studentId)
     {
+        $reservations = Reservation::all();
         if ( isset($bookId) && isset($studentId) ){
 
             $reservations = Reservation::where('book_id', $bookId)
