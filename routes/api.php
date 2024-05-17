@@ -20,12 +20,14 @@ Route::get('/user', function (Request $request) {
 
 
 
-// Route::apiResource('roles', RoleController::class);
+Route::apiResource('roles', RoleController::class);
 // Route::post('roles/{id}', [RoleController::class, 'update_workaround']);
-
-// Route::post('users/{id}', [UserController::class, 'update_workaround']);
-// Route::apiResource('users', UserController::class);
+Route::get('users/dashboard', [UserController::class, 'getDashboardMenu'])->middleware('auth:sanctum');;
+Route::post('users/{id}', [UserController::class, 'update_workaround']);
+Route::apiResource('users', UserController::class);
 Route::get('users', [UserController::class, 'index']);
+
+
 
 Route::get('user', [TokenController::class, 'user'])->middleware('auth:sanctum');
 Route::post('register', [TokenController::class, 'register'])->middleware('guest');

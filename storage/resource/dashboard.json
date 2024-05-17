@@ -1,0 +1,34 @@
+{
+    "pages": [
+        {
+            "name": "dashboard",
+            "path": "/home",
+            "permission":  [1, 2, 3, 4]
+        },
+        {
+            "name": "students",
+            "path": "/students",
+            "permission":  [1, 2, 4]
+        },
+        {
+            "name": "Books",
+            "path": "/books",
+            "permission":  [1, 3]
+        },
+        {
+            "name": "Reservations",
+            "path": "/reservations",
+            "permission":  [1, 3]
+        },
+        {
+            "name": "Pase de Baño",
+            "path": "/wcIndex",
+            "permission":  [1, 2, 4]
+        },
+        {
+            "name": "Events",
+            "path": "/events",
+            "permission":  [1, 2, 4]
+        }
+    ]
+}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Services\UserServices;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -72,5 +73,20 @@ class UserController extends Controller
     public function update_workaround(UserRequest $request, $id)
     {
         return $this->update($request, $id);
+    }
+
+
+    public function getDashboardMenu(Request $request){
+        $request->user()->role_id;
+        $filePath = storage_path('/resource/dashboard.json');
+        $jsonContent = file_get_contents($filePath);
+        $array =  json_decode($jsonContent, true);
+        $menu = [];
+        foreach ($array["pages"] as $element){
+           if (in_array($request->user()->role_id, $element["permission"])){
+               array_push($menu, $element);
+           }
+        }
+        return $menu;
     }
 }
