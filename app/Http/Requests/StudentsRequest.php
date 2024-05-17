@@ -27,6 +27,7 @@ class StudentsRequest extends FormRequest
             'surname2' => 'required|string',
             'dni' => 'required|string',
             'birthDate' =>'required|before:today' ,
+            'email' => 'required|string',
             'course_id' => 'required|string',
             'leave',
         ];

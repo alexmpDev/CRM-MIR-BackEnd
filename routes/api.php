@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\StudentOverservationController;
 use App\Http\Controllers\Api\PhoneInfoController;
 use App\Http\Controllers\Api\TokenController;
 use App\Http\Controllers\Api\WcController;
+use App\Http\Controllers\Api\CourseController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -76,7 +77,7 @@ Route::get('/tickets/validate/{ticketId}', [EventController::class, 'validateTic
 Route::apiResource("events", EventController::class);
 Route::post('events/{id}', [EventController::class, 'update_workaround']);
 
-
+Route::apiResource('course', CourseController::class);
 
 
 

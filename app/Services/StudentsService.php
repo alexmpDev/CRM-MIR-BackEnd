@@ -22,7 +22,7 @@ class StudentsService
     public function listOne($id)
     {
 
-        $student = Student::where('id', $id)->get();
+        $student = Student::where('id', $id)->with('course')->get();
 
 
         return json_encode($student);
@@ -74,10 +74,10 @@ class StudentsService
 
 
 
-       
+
        Mail::to($student->email)->send(new WelcomeStudentMail($student, $qrPath));
-        
-        
+
+
 
         return response()->json($student, 201);
 
@@ -101,9 +101,10 @@ class StudentsService
         $student->name = $data['name'];
         $student->surname1 = $data['surname1'];
         $student->surname2 = $data['surname2'];
+        $student->email = $data['email'];
         $student->dni = $data['dni'];
         $student->birthDate = $data['birthDate'];
-        $student->curs = $data['course_id'];
+        $student->course_id = $data['course_id'];
         $student->leave = $data['leave'];
         if (isset($data['photo'])) {
             isset($student->photo) ? Storage::delete("/public/" .$student->photo) : "";
