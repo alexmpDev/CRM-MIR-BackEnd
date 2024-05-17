@@ -18,7 +18,7 @@ class CreateWcPassesTable extends Migration
             $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->string('teacher', 255);
-            $table->timestamp('valid_until')->nullable();// TODO  cambiar los seeder para poder quitar el n8ullable de esta columna
+            $table->timestamp('valid_until');
             $table->timestamps();
         });
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,8 @@ Route::get('/user', function (Request $request) {
 
 // Route::post('users/{id}', [UserController::class, 'update_workaround']);
 // Route::apiResource('users', UserController::class);
+Route::get('users', [UserController::class, 'index']);
+
 Route::get('user', [TokenController::class, 'user'])->middleware('auth:sanctum');
 Route::post('register', [TokenController::class, 'register'])->middleware('guest');
 Route::post('login', [TokenController::class, 'login'])->middleware('guest');
@@ -61,3 +64,19 @@ Route::apiResource("reservations", ReservationController::class);
 Route::post('reservations/{id}', [ReservationController::class, 'update_workaround']);
 
 Route::apiResource("wc", WcController::class);
+
+// Asignar cursos a un evento
+Route::post('/events/assign-courses', [EventController::class, 'assignCourses']);
+
+Route::post('/events/generate-tickets', [EventController::class, 'generateTickets']);
+Route::delete('/events/{eventId}/unassign-courses', [EventController::class, 'unassignCourses']);
+
+Route::get('/tickets/validate/{ticketId}', [EventController::class, 'validateTicket']);
+
+Route::apiResource("events", EventController::class);
+Route::post('events/{id}', [EventController::class, 'update_workaround']);
+
+
+
+
+

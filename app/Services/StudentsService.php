@@ -2,17 +2,20 @@
 
 namespace App\Services;
 
+use App\Mail\WelcomeStudentMail;
 use App\Models\PhoneInfo;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Student;
 use App\Models\StudentObservation;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class StudentsService
 {
     public function list()
     {
-        $students = Student::all();
+        $students = Student::with('course')->get();
         return json_encode($students);
     }
 
@@ -55,9 +58,10 @@ class StudentsService
             'name' => $data['name'],
             'surname1' => $data['surname1'],
             'surname2' => $data['surname2'],
+            'email' => $data['email'],
             'dni' => $data['dni'],
             'birthDate' => $data['birthDate'],
-            'curs' => $data['curs'],// TODO: pasar a otra tabla
+            'course_id' => $data['course_id'],
             'photo' => $photoPath,
             'leave' => $data['leave'],
         ]);
@@ -70,8 +74,10 @@ class StudentsService
 
 
 
-
-
+       
+       Mail::to($student->email)->send(new WelcomeStudentMail($student, $qrPath));
+        
+        
 
         return response()->json($student, 201);
 
@@ -97,7 +103,7 @@ class StudentsService
         $student->surname2 = $data['surname2'];
         $student->dni = $data['dni'];
         $student->birthDate = $data['birthDate'];
-        $student->curs = $data['curs'];
+        $student->curs = $data['course_id'];
         $student->leave = $data['leave'];
         if (isset($data['photo'])) {
             isset($student->photo) ? Storage::delete("/public/" .$student->photo) : "";

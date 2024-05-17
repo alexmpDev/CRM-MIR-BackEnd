@@ -11,19 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
+        Schema::create('event_courses', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
-            $table->string('surname1', 255);
-            $table->string('surname2', 255);
-            $table->string('email',255);
-            $table->string('dni', 255);//no mostrar en ningun show ni lista usar solo en bd
-            $table->date('birthDate');
+            $table->unsignedBigInteger('event_id'); // Referencia a la tabla events
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->unsignedBigInteger('course_id'); // Referencia a la tabla courses
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->string('photo', 255)->nullable();
-            $table->boolean('leave')->default(false);
-            $table->string('qr',255)->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('event_courses');
     }
 };
