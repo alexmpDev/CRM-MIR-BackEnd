@@ -84,7 +84,10 @@ class EventController extends Controller
     }
 
 
-
+    public function ticketsGenerated($eventId)
+    {
+        return $this->eventService->ticketsGenerated($eventId);
+    }
 
     
 }

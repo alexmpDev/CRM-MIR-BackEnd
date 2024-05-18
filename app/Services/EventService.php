@@ -164,6 +164,11 @@ public function validateTicket($ticketId)
     return response()->json(['message' => 'Ticket validated successfully'], 200);
 }
 
+public function ticketsGenerated($eventId)
+{
+    $ticketsCount = EventTicket::where('event_id', $eventId)->count();
+    return response()->json(['tickets_generated' => $ticketsCount > 0], 200);
+}
 
 
 

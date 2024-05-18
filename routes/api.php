@@ -72,6 +72,7 @@ Route::apiResource("wc", WcController::class)->middleware('auth:sanctum');
 Route::post('/events/assign-courses', [EventController::class, 'assignCourses'])->middleware('auth:sanctum');
 
 Route::post('/events/generate-tickets', [EventController::class, 'generateTickets'])->middleware('auth:sanctum');
+Route::get('/events/{eventId}/tickets-generated', [EventController::class, 'ticketsGenerated'])->middleware('auth:sanctum');
 Route::delete('/events/{eventId}/unassign-courses', [EventController::class, 'unassignCourses'])->middleware('auth:sanctum');
 
 Route::get('/tickets/validate/{ticketId}', [EventController::class, 'validateTicket'])->middleware('auth:sanctum');
