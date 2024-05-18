@@ -87,7 +87,8 @@ class StudentsService
 
 
     private function saveQr($studentId){
-        $url = 'http://127.0.0.1:8000/api/students/' . $studentId;
+        
+        $url = env('BASE_URL', 'http://127.0.0.1:8000') . '/api/students/' . $studentId;
         $image = QrCode::format('png')->generate($url);
         $output_file = 'public/qr/students/' . time() . '.png';
         Storage::disk('local')->put($output_file, $image);

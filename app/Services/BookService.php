@@ -44,7 +44,8 @@ class BookService
     }
 
     private function saveQr($bookId){
-        $url = 'http://127.0.0.1:8000/api/books/' . $bookId;
+       
+        $url = env('BASE_URL', 'http://127.0.0.1:8000') . '/api/books/' . $bookId;
         $image = QrCode::format('png')->generate($url);
         $output_file = 'public/qr/books/' . time() . '.png';
         Storage::disk('local')->put($output_file, $image);

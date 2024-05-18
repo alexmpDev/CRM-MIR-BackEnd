@@ -113,7 +113,9 @@ class EventService
 
 private function saveQr($ticketId, $studentId, $eventId)
 {
-    $url = 'http://127.0.0.1:8000/api/tickets/validate/' . $ticketId;
+    
+    $url = env('BASE_URL', 'http://127.0.0.1:8000') . '/api/tickets/validate/' . $ticketId;
+
     // Incluir información del evento y estudiante en el QR para garantizar la unicidad
     $qrContent = $url . '?event_id=' . $eventId . '&student_id=' . $studentId;
     $image = QrCode::format('png')->size(200)->generate($qrContent);
