@@ -21,10 +21,13 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->route('id'); // Obtiene el ID del usuario de la ruta (en caso de actualización)
+
         return [
-                'email' => 'email|unique:users,email',
-                'name' => 'string|max:255',
-                'password' => 'string|min:6',
-                ];
+            'email' => 'required|email|unique:users,email,' . $userId,
+            'name' => 'required|string|max:255',
+            'password' => 'nullable|string|min:6', // Hacemos que la contraseña sea opcional para la actualización
+            'role_id' => 'required|integer'
+        ];
     }
 }

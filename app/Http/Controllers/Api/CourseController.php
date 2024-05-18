@@ -22,9 +22,17 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'curs' => 'required|string|max:255',
+        ]);
+    
+        $course = Course::create([
+            'curs' => $validatedData['curs']
+        ]);
+     
+        return response()->json($course, 201);
     }
-
+    
     /**
      * Display the specified resource.
      */
@@ -36,16 +44,31 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'curs' => 'required|string|max:255',
+        ]);
+
+        $course = Course::findOrFail($id);
+
+        $course->update([
+            'curs' => $validatedData['curs']
+        ]);
+
+        return response()->json($course, 200);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $course = Course::findOrFail($id);
+        $course->delete();
+    
+        return response()->json(['message' => 'Course deleted successfully'], 200);
     }
+    
 }
