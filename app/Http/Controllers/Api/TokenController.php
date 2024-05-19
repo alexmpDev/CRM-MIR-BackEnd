@@ -13,14 +13,14 @@ class TokenController extends Controller
     public function user(Request $request)
     {
         $user = User::where('email', $request->user()->email)->first();
-       
+
         return response()->json([
             "success" => true,
             "user"    => $request->user(),
             "roles"   => [$user->role->name],
         ]);
     }
- 
+
 
     public function login(Request $request){
         $credentials = $request->validate([
@@ -40,7 +40,8 @@ class TokenController extends Controller
             return response()->json([
                 "success"   => true,
                 "authToken" => $token,
-                "tokenType" => "Bearer"
+                "tokenType" => "Bearer",
+                "role" => $user->role_id
             ], 200);
         } else {
             return response()->json([
@@ -48,7 +49,7 @@ class TokenController extends Controller
                 "message" => "Invalid login credentials"
             ], 401);
         }
- 
+
     }
 
     public function register(Request $request){

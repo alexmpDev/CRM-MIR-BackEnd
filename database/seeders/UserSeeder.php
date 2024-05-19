@@ -41,6 +41,12 @@ class UserSeeder extends Seeder
                 'email' => 'direccio@example.com',
                 'password' => Hash::make('direcciopassword'),
                 'role_id' => 4
+            ],
+            [
+                'name' => 'Secretaria',
+                'email' => 'secretaria@example.com',
+                'password' => Hash::make('secretariapassword'),
+                'role_id' => 5
             ]
             // Puedes agregar más estudiantes aquí según sea necesario
         ];
