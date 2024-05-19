@@ -35,20 +35,22 @@ class BookService
         ]);
 
 
-
-        //version con qr
-         $qrPath = $this->saveQr($book->id);
-
-         $book->update(['qr' => $qrPath]);
+        $qrPath = $this->saveQr($book->id);
+        $book->update(['qr' => $qrPath]);
 
     }
 
     private function saveQr($bookId){
-       
+
         $url = env('BASE_URL', 'http://127.0.0.1:8000') . '/api/books/' . $bookId;
         $image = QrCode::format('png')->generate($url);
         $output_file = 'public/qr/books/' . time() . '.png';
         Storage::disk('local')->put($output_file, $image);
+
+        $prefix = 'public/';
+        if (substr($output_file, 0, strlen($prefix)) == $prefix) {
+            $output_file = substr($output_file, strlen($prefix));
+        }
 
         return $output_file;
     }
