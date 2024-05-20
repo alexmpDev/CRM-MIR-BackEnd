@@ -1,7 +1,7 @@
 # CRM-MIR-BackEnd
 
 ## Descripción
-El proyecto CRM-MIR-BackEnd es la parte trasera de una aplicación de CRM (Customer Relationship Management) llamada MIR, desarrollada con el framework Laravel. Proporciona una API RESTful para la gestión de clientes, ventas, productos y usuarios.
+El proyecto CRM-MIR-BackEnd es la parte trasera de una aplicación de CRM MIR, desarrollada con el framework Laravel. Proporciona una API RESTful para la gestión de clientes, ventas, productos y usuarios.
 
 ## Instalación
 
@@ -68,6 +68,15 @@ El proyecto CRM-MIR-BackEnd es la parte trasera de una aplicación de CRM (Custo
 
 - Accede a la API en http://localhost:8000.
 
+- Para acceder al backoffice, asegúrate de estar logeado con una cuenta de administrador y visita la URL `/admin`.
+  
+## Hay usuarios de prueba de todos los roles 
+
+- Sus credenciales son:
+- {rol} hace referencia al rel que quieras probar (admin,profesor,bibliotecta,secretaria , etc..)
+  rol@example.com
+  rolpassword
+  
 ## Nota sobre el correo electrónico
 
 Para que la funcionalidad de correo electrónico funcione correctamente, asegúrate de haber configurado las variables de entorno relacionadas con el correo electrónico en el archivo `.env` como se muestra arriba. Estas variables incluyen el servidor SMTP, las credenciales de inicio de sesión y la configuración de cifrado.
