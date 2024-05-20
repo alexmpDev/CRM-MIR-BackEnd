@@ -74,8 +74,8 @@ El proyecto CRM-MIR-BackEnd es la parte trasera de una aplicación de CRM MIR, d
 
 - Sus credenciales son:
 - {rol} hace referencia al rel que quieras probar (admin,profesor,bibliotecta,secretaria , etc..)
-  rol@example.com
-  rolpassword
+     - rol@example.com
+     - rolpassword
   
 ## Nota sobre el correo electrónico
 
