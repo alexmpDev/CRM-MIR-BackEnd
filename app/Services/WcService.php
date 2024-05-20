@@ -10,7 +10,7 @@ class WcService
 {
     public function list() {
 
-        $wcPass = WcPass::all();
+        $wcPass = WcPass::with('student')->get();
         return json_encode($wcPass);
     }
 
