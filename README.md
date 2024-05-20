@@ -55,6 +55,7 @@ El proyecto CRM-MIR-BackEnd es la parte trasera de una aplicación de CRM (Custo
 
     ```bash
     php artisan migrate
+    php artisan db:seed
     ```
 
 ## Uso
