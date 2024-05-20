@@ -4,87 +4,114 @@ namespace App\Services;
 
 use App\Models\WcPass;
 use Carbon\Carbon;
-use DateTime;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class WcService
 {
-    public function list() {
-
-        $wcPass = WcPass::all();
-        return json_encode($wcPass);
+    public function list()
+    {
+        try {
+            $wcPass = WcPass::with('student')->get();
+            return response()->json($wcPass);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to list wc passes', 'message' => $e->getMessage()], 500);
+        }
     }
 
-    public function listOne($id) {
-
-        $wcPass = WcPass::where('id', $id)->get();
-        return json_encode($wcPass);
+    public function listOne($id)
+    {
+        try {
+            $wcPass = WcPass::with('student')->findOrFail($id);
+            return response()->json($wcPass);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'WcPass not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve wc pass', 'message' => $e->getMessage()], 500);
+        }
     }
 
+    public function create($data)
+    {
+        try {
+            $currentStatus = $this->passControl($data['student_id']);
+            $status = json_decode($currentStatus->getContent(), true);
 
-    public function create($data) {
-        // Primero, comprobar si ya hay un pase válido
-        $currentStatus = $this->passControl($data['student_id']);
-        $status = json_decode($currentStatus, true);
+            if ($status['status']) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Este estudiante ya tiene un wcpass válido y no se puede crear otro.'
+                ], 400);
+            }
 
-        // Si hay un pase válido, no permitir crear otro
-        if ($status['status']) {
-            return json_encode([
-                'status' => false,
-                'message' => 'Este estudiante ya tiene un wcpass válido y no se puede crear otro.'
+            $wcPass = WcPass::create([
+                'student_id' => $data['student_id'],
+                'teacher' => $data['teacher'],
+                'valid_until' => Carbon::now()->addHour()
             ]);
-        }
 
-        // Si no hay pase válido, proceder a crear uno nuevo
-        WcPass::create([
-            'student_id' => $data['student_id'],
-            'teacher' => $data['teacher'],
-            'valid_until' =>Carbon::now()->addHours(1)
-        ]);
-
-        return json_encode([
-            'status' => true,
-            'message' => 'Nuevo wcpass creado exitosamente.'
-        ]);
-    }
-
-
-    public function edit($data, $id) {
-
-        $wcPass = WcPass::find($id);
-        $wcPass['student_id'] = $data['student_id'];
-        $wcPass['teacher'] = $data['teacher'];
-
-        $wcPass->save();
-    }
-
-    public function delete($id) {
-
-        $wcPass = WcPass::find($id);
-        if (isset($wcPass)) {
-            $wcPass->delete();
-        } else {
-            return 'No hay pase de baño con esta id';
-        }
-    }
-
-    public function passControl($studentId) {
-        $now = Carbon::now();
-        $wcPass = WcPass::where('student_id', $studentId)
-                        ->where('valid_until', '>', $now)
-                        ->first();
-        
-        if ($wcPass) {
-            return json_encode([
+            return response()->json([
                 'status' => true,
-                'message' => 'El estudiante todavía tiene un wcpass válido.',
+                'message' => 'Nuevo wcpass creado exitosamente.',
                 'wcPass' => $wcPass
-            ]);
-        } else {
-            return json_encode([
-                'status' => false,
-                'message' => 'No hay wcpass válido para este estudiante.'
-            ]);
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to create wc pass', 'message' => $e->getMessage()], 500);
         }
     }
 
+    public function edit($data, $id)
+    {
+        try {
+            $wcPass = WcPass::findOrFail($id);
+            $wcPass->update([
+                'student_id' => $data['student_id'],
+                'teacher' => $data['teacher']
+            ]);
+
+            return response()->json(['message' => 'WcPass updated successfully', 'wcPass' => $wcPass], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'WcPass not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to update wc pass', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function delete($id)
+    {
+        try {
+            $wcPass = WcPass::findOrFail($id);
+            $wcPass->delete();
+            return response()->json(['message' => 'WcPass deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'WcPass not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to delete wc pass', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function passControl($studentId)
+    {
+        try {
+            $now = Carbon::now();
+            $wcPass = WcPass::where('student_id', $studentId)
+                ->where('valid_until', '>', $now)
+                ->first();
+
+            if ($wcPass) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'El estudiante todavía tiene un wcpass válido.',
+                    'wcPass' => $wcPass
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No hay wcpass válido para este estudiante.'
+                ], 200);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to check wc pass status', 'message' => $e->getMessage()], 500);
+        }
+    }
 }

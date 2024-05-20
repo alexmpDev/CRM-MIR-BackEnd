@@ -7,241 +7,271 @@ use App\Models\PhoneInfo;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Student;
 use App\Models\StudentObservation;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
 
 class StudentsService
 {
     public function list()
     {
-        $students = Student::with('course')->get();
-        return json_encode($students);
+        try {
+            $students = Student::with('course')->get();
+            return response()->json($students);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to list students', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function listOne($id)
     {
-
-        $student = Student::where('id', $id)->with('course')->get();
-
-
-        return json_encode($student);
-
+        try {
+            $student = Student::with('course')->findOrFail($id);
+            return response()->json($student);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Student not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve student', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function listOnePhone($id)
     {
-
-        $student = PhoneInfo::where('id', $id)->get();
-
-        return json_encode($student);
-
+        try {
+            $phoneInfo = PhoneInfo::findOrFail($id);
+            return response()->json($phoneInfo);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Phone information not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve phone information', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function listOneObservation($id)
     {
-
-        $student = StudentObservation::where('id', $id)->get();
-
-        return json_encode($student);
-
+        try {
+            $observation = StudentObservation::findOrFail($id);
+            return response()->json($observation);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Observation not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve observation', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function create($data)
     {
-        $photoPath = null;
-        if (isset($data['photo'])) {
-            $photoPath = $this->savePhoto($data['photo']);
+        try {
+            $photoPath = null;
+            if (isset($data['photo'])) {
+                $photoPath = $this->savePhoto($data['photo']);
+            }
+
+            $student = Student::create([
+                'name' => $data['name'],
+                'surname1' => $data['surname1'],
+                'surname2' => $data['surname2'],
+                'email' => $data['email'],
+                'dni' => $data['dni'],
+                'birthDate' => $data['birthDate'],
+                'course_id' => $data['course_id'],
+                'photo' => $photoPath,
+                'leave' => $data['leave'],
+            ]);
+
+            $qrPath = $this->saveQr($student->id);
+            $student->update(['qr' => $qrPath]);
+
+            Mail::to($student->email)->send(new WelcomeStudentMail($student, $qrPath));
+
+            return response()->json($student, 201);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to create student', 'message' => $e->getMessage()], 500);
         }
-
-        $student = Student::create([
-            'name' => $data['name'],
-            'surname1' => $data['surname1'],
-            'surname2' => $data['surname2'],
-            'email' => $data['email'],
-            'dni' => $data['dni'],
-            'birthDate' => $data['birthDate'],
-            'course_id' => $data['course_id'],
-            'photo' => $photoPath,
-            'leave' => $data['leave'],
-        ]);
-
-         // Llama a la función para guardar el código QR después de haber creado el estudiante
-        $qrPath = $this->saveQr($student->id);
-
-        // Actualiza el campo 'qr' en la tabla de estudiantes con la ruta del código QR
-        $student->update(['qr' => $qrPath]);
-
-
-
-
-       Mail::to($student->email)->send(new WelcomeStudentMail($student, $qrPath));
-
-
-
-        return response()->json($student, 201);
-
-
     }
 
-
-
-    private function saveQr($studentId){
-        
-        $url = env('BASE_URL', 'http://127.0.0.1:8000') . '/api/students/' . $studentId;
-        $image = QrCode::format('png')->generate($url);
-        $output_file = 'public/qr/students/' . time() . '.png';
-        Storage::disk('local')->put($output_file, $image);
-        return $output_file;
+    private function saveQr($studentId)
+    {
+        try {
+            $url = env('BASE_URL', 'http://127.0.0.1:8000') . '/api/students/' . $studentId;
+            $image = QrCode::format('png')->generate($url);
+            $output_file = 'public/qr/students/' . time() . '.png';
+            Storage::disk('local')->put($output_file, $image);
+            return $output_file;
+        } catch (Exception $e) {
+            throw new Exception('Failed to generate QR code: ' . $e->getMessage());
+        }
     }
 
+    public function edit($data, $id)
+    {
+        try {
+            $student = Student::findOrFail($id);
+            $student->update([
+                'name' => $data['name'],
+                'surname1' => $data['surname1'],
+                'surname2' => $data['surname2'],
+                'email' => $data['email'],
+                'dni' => $data['dni'],
+                'birthDate' => $data['birthDate'],
+                'course_id' => $data['course_id'],
+                'leave' => $data['leave'],
+            ]);
 
-    public function edit($data, $id){
+            if (isset($data['photo'])) {
+                isset($student->photo) ? Storage::delete("/public/" . $student->photo) : "";
+                $photoPath = $this->savePhoto($data['photo']);
+                $student->update(['photo' => $photoPath]);
+            }
 
-        $student = Student::find($id);
-        $student->name = $data['name'];
-        $student->surname1 = $data['surname1'];
-        $student->surname2 = $data['surname2'];
-        $student->email = $data['email'];
-        $student->dni = $data['dni'];
-        $student->birthDate = $data['birthDate'];
-        $student->course_id = $data['course_id'];
-        $student->leave = $data['leave'];
-        if (isset($data['photo'])) {
-            isset($student->photo) ? Storage::delete("/public/" .$student->photo) : "";
-            $photoPath = $this->savePhoto($data['photo']);
-            $student->photo = $photoPath;
+            return response()->json($student, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Student not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to update student', 'message' => $e->getMessage()], 500);
         }
-
-        $student->save();
-
     }
 
     public function createStudentObservation($data)
     {
-        $student = Student::find($data['student_id']);
-        if (!$student) {
-            return response()->json(['message' => 'Student not found'], 404);
+        try {
+            $student = Student::findOrFail($data['student_id']);
+
+            $observation = StudentObservation::create([
+                'student_id' => $student->id,
+                'observation' => $data['observation']
+            ]);
+
+            return response()->json($observation, 201);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Student not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to create observation', 'message' => $e->getMessage()], 500);
         }
-
-        $observation = StudentObservation::create([
-            'student_id' => $student->id,
-            'observation' => $data['observation']
-        ]);
-
-        return response()->json($observation, 201);
     }
 
     public function updateStudentObservation($id, $data)
     {
-        $observation = StudentObservation::findOrFail($id);
-
-        $observation->update([
-            'observation' => $data['observation']
-        ]);
-
-        return response()->json($observation, 200);
+        try {
+            $observation = StudentObservation::findOrFail($id);
+            $observation->update(['observation' => $data['observation']]);
+            return response()->json($observation, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Observation not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to update observation', 'message' => $e->getMessage()], 500);
+        }
     }
-
 
     public function deleteStudentObservation($observationId)
     {
-        $observation = StudentObservation::find($observationId);
-        if (!$observation) {
-            return response()->json(['message' => 'Observation not found'], 404);
+        try {
+            $observation = StudentObservation::findOrFail($observationId);
+            $observation->delete();
+            return response()->json(['message' => 'Observation deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Observation not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to delete observation', 'message' => $e->getMessage()], 500);
         }
-
-        $observation->delete();
-        return response()->json(['message' => 'Observation deleted successfully'], 200);
     }
 
     public function listStudentObservations($studentId)
     {
-        $student = Student::find($studentId);
-        if (!$student) {
-            return response()->json(['message' => 'Student not found'], 404);
+        try {
+            $student = Student::findOrFail($studentId);
+            $observations = $student->observations()->get();
+            return response()->json($observations, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Student not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve observations', 'message' => $e->getMessage()], 500);
         }
-
-        $observations = $student->observations()->get();
-
-        return response()->json($observations, 200);
     }
 
-
-    public function delete($id){
-        $student = Student::find($id);
-        if (isset($student)) {
-            $student->delete();
-            if (isset($student->photo)){
-
-                Storage::delete("/public/" .$student->photo);
+    public function delete($id)
+    {
+        try {
+            $student = Student::findOrFail($id);
+            if (isset($student->photo)) {
+                Storage::delete("/public/" . $student->photo);
             }
-        } else {
-            return 'No hay estudiante con esta id';
+            $student->delete();
+            return response()->json(['message' => 'Student deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Student not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to delete student', 'message' => $e->getMessage()], 500);
         }
-
-
     }
-
-    //phone info
 
     public function createPhoneInfo($data)
     {
-        $student = Student::find($data['student_id']);
-        if (!$student) {
-            return response()->json(['message' => 'Student not found'], 404);
+        try {
+            $student = Student::findOrFail($data['student_id']);
+            $phoneInfo = PhoneInfo::create([
+                'student_id' => $student->id,
+                'name' => $data['name'],
+                'phone' => $data['phone']
+            ]);
+            return response()->json($phoneInfo, 201);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Student not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to create phone information', 'message' => $e->getMessage()], 500);
         }
-
-        $phoneInfo = PhoneInfo::create([
-            'student_id' => $student->id,
-            'name' => $data['name'],
-            'phone' => $data['phone']
-        ]);
-
-        return response()->json($phoneInfo, 201);
     }
 
     public function updatePhoneInfo($id, $data)
     {
-        $phoneInfo = PhoneInfo::findOrFail($id);
-
-        $phoneInfo->update([
-            'name' => $data['name'],
-            'phone' => $data['phone']
-        ]);
-
-        return response()->json($phoneInfo, 200);
+        try {
+            $phoneInfo = PhoneInfo::findOrFail($id);
+            $phoneInfo->update([
+                'name' => $data['name'],
+                'phone' => $data['phone']
+            ]);
+            return response()->json($phoneInfo, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Phone information not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to update phone information', 'message' => $e->getMessage()], 500);
+        }
     }
-
 
     public function deletePhoneInfo($phoneInfoId)
     {
-        $phoneInfo = PhoneInfo::find($phoneInfoId);
-        if (!$phoneInfo) {
-            return response()->json(['message' => 'Phone information not found'], 404);
+        try {
+            $phoneInfo = PhoneInfo::findOrFail($phoneInfoId);
+            $phoneInfo->delete();
+            return response()->json(['message' => 'Phone information deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Phone information not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to delete phone information', 'message' => $e->getMessage()], 500);
         }
-
-        $phoneInfo->delete();
-        return response()->json(['message' => 'Phone information deleted successfully'], 200);
     }
 
     public function listStudentPhoneInfo($studentId)
     {
-        $student = Student::find($studentId);
-        if (!$student) {
-            return response()->json(['message' => 'Student not found'], 404);
+        try {
+            $student = Student::findOrFail($studentId);
+            $phones = $student->phones()->get();
+            return response()->json($phones, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Student not found', 'message' => $e->getMessage()], 404);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve phone information', 'message' => $e->getMessage()], 500);
         }
-
-        $phones = $student->phones()->get();
-
-        return response()->json($phones, 200);
     }
 
     private function savePhoto($photo)
     {
-
-        $photoPath = $photo->store('photos', 'public');
-        return $photoPath;
+        try {
+            $photoPath = $photo->store('photos', 'public');
+            return $photoPath;
+        } catch (Exception $e) {
+            throw new Exception('Failed to save photo: ' . $e->getMessage());
+        }
     }
-
 }
